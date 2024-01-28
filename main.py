@@ -134,7 +134,7 @@ def get_wallets():
 async def run_module(module, account_id, key, proxy, destination_address):
     try:
         print(module)
-        if(module in [deposit_full_amount_okx]):
+        if(module in [deposit_full_amount_okx, automatic_routes]):
             await module(account_id, key, proxy, destination_address)
         else:
             await module(account_id, key, proxy)

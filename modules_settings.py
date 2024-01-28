@@ -52,10 +52,12 @@ async def withdraw_okx(_id, key, proxy):
     terminate - if True - terminate program if money is not withdrawn
     """
     token = 'ETH'
+
     #chains = ['arbitrum', 'zksync', 'linea', 'base', 'optimism']
     chains = ['zksync']
-    min_amount = 0.007
-    max_amount = 0.01
+
+    min_amount = 0.035
+    max_amount = 0.05
 
     terminate = True
 
@@ -642,10 +644,10 @@ async def deposit_basilisk(account_id, key, proxy):
 
     make_withdraw = True
 
-    all_amount = False
+    all_amount = True
 
-    min_percent = 60
-    max_percent = 80
+    min_percent = 5
+    max_percent = 10
 
     basilisk = Basilisk(account_id, key, proxy)
     await basilisk.deposit(
@@ -670,10 +672,10 @@ async def deposit_reactorfusion(account_id, key, proxy):
 
     make_withdraw = True
 
-    all_amount = False
+    all_amount = True
 
-    min_percent = 60
-    max_percent = 80
+    min_percent = 5
+    max_percent = 15
 
     reactorfusion = ReactorFusion(account_id, key, proxy)
     await reactorfusion.deposit(
@@ -821,10 +823,10 @@ async def swap_multiswap(account_id, key, proxy):
     ]
 
     min_swap = 1
-    max_swap = 1
+    max_swap = 2
 
-    sleep_from = 300
-    sleep_to = 600
+    sleep_from = 100
+    sleep_to = 200
 
     slippage = 1
 
@@ -936,8 +938,8 @@ async def custom_routes(account_id, key, proxy):
         [send_mail, None],
     ]
 
-    sleep_from = 300
-    sleep_to = 700
+    sleep_from = 100
+    sleep_to = 300
 
     random_module = True
 
@@ -960,11 +962,11 @@ async def automatic_routes(account_id, key, proxy):
 
     """
 
-    transaction_count = 25
-    cheap_ratio = 1.0
+    transaction_count = 6
+    cheap_ratio = 0.2
 
-    sleep_from = 30000
-    sleep_to = 50000
+    sleep_from = 120
+    sleep_to = 360
 
     cheap_modules = [send_mail, enable_collateral_eralend, enable_collateral_basilisk, enable_collateral_reactorfusion,
                      create_safe, mint_zkstars, mint_tavaera]
@@ -972,6 +974,8 @@ async def automatic_routes(account_id, key, proxy):
                          create_omnisea]
 
     routes = Routes(account_id, key, proxy)
+    await withdraw_okx(account_id, key, proxy);
+
     await routes.start_automatic(transaction_count, cheap_ratio, sleep_from, sleep_to, cheap_modules, expensive_modules)
 
 

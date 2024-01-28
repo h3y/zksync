@@ -1,5 +1,5 @@
 # RANDOM WALLETS MODE
-RANDOM_WALLET = True  # True or False
+RANDOM_WALLET = False  # True or False
 
 # removing a wallet from the list after the job is done
 REMOVE_WALLET = False
@@ -10,7 +10,7 @@ SLEEP_TO = 20  # Second
 QUANTITY_THREADS = 1
 
 THREAD_SLEEP_FROM = 300
-THREAD_SLEEP_TO = 600
+THREAD_SLEEP_TO = 400
 
 # PROXY MODE
 USE_PROXY = False
