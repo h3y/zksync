@@ -826,7 +826,7 @@ async def swap_multiswap(account_id, key, proxy):
         "xyswap", "openocean", "inch", "vesync"
     ]
 
-    min_swap = 1
+    min_swap = 2
     max_swap = 2
 
     sleep_from = 100
@@ -984,6 +984,8 @@ async def automatic_routes(account_id, key, proxy, destination_address):
     await routes.start_automatic(transaction_count, cheap_ratio, sleep_from, sleep_to, cheap_modules, expensive_modules)
 
     await bridge_orbiter(account_id, key, proxy);
+
+    await asyncio.sleep(200);
     await deposit_full_amount_okx(account_id, key, proxy, destination_address);
 
 
