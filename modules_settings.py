@@ -77,9 +77,10 @@ async def deposit_full_amount_okx(_id, key, proxy, destination_address):
     token = 'ETH'
     to_address = destination_address
     #chains = ['arbitrum', 'zksync', 'linea', 'base', 'optimism']
-    chains = ['zksync']
-    min_left_amount = 0.0015
-    max_left_amount = 0.0027
+    #chains = ['zksync']
+    chains = ['arbitrum']
+    min_left_amount = 0.0007
+    max_left_amount = 0.0012
     terminate = True
     if len(destination_address) == 0:
         raise ValueError('destination_address is null')
@@ -98,18 +99,21 @@ async def bridge_orbiter(account_id, key, proxy):
     min_required_amount - минимальная требуемая сумма в сети, на которую будет реагировать модуль в eth
     """
 
-    from_chains = ["arbitrum", "optimism", "base", "scroll", "linea"]
-    to_chain = "zksync"
+    #from_chains = ["arbitrum", "optimism", "base", "scroll", "linea"]
+    #to_chain = "zksync"
+
+    from_chains = ["zksync"]
+    to_chain = "arbitrum"
 
     min_amount = 0.005
     max_amount = 0.0051
     decimal = 4
 
-    all_amount = False
+    all_amount = True
 
-    min_percent = 5
-    max_percent = 10
-    save_funds = [0.0006, 0.001]
+    min_percent = 95
+    max_percent = 100
+    save_funds = [0.0014, 0.002]
     min_required_amount = 0.001
 
     orbiter = Orbiter(account_id, key, from_chains, proxy, min_required_amount)
@@ -947,7 +951,7 @@ async def custom_routes(account_id, key, proxy):
     await routes.start(use_modules, sleep_from, sleep_to, random_module)
 
 
-async def automatic_routes(account_id, key, proxy):
+async def automatic_routes(account_id, key, proxy, destination_address):
     """
     Модуль автоматически генерирует пути по которому пройдет кошелек,
     меняя вероятности выбрать тот или иной модуль для каждого кошелька
@@ -963,20 +967,24 @@ async def automatic_routes(account_id, key, proxy):
     """
 
     transaction_count = 6
-    cheap_ratio = 0.2
+    cheap_ratio = 0.3
 
     sleep_from = 120
-    sleep_to = 360
+    sleep_to = 240
 
-    cheap_modules = [send_mail, enable_collateral_eralend, enable_collateral_basilisk, enable_collateral_reactorfusion,
-                     create_safe, mint_zkstars, mint_tavaera]
-    expensive_modules = [swap_multiswap, deposit_reactorfusion, deposit_zerolend, deposit_basilisk, deposit_eralend,
+    #cheap_modules = [send_mail, enable_collateral_eralend, enable_collateral_basilisk, enable_collateral_reactorfusion,
+     #                create_safe, mint_zkstars, mint_tavaera]
+    cheap_modules = [send_mail, create_safe, mint_zkstars, mint_tavaera]
+    expensive_modules = [swap_multiswap, swap_multiswap, deposit_reactorfusion, swap_multiswap, deposit_zerolend, deposit_basilisk, deposit_eralend,
                          create_omnisea]
 
     routes = Routes(account_id, key, proxy)
     await withdraw_okx(account_id, key, proxy);
 
     await routes.start_automatic(transaction_count, cheap_ratio, sleep_from, sleep_to, cheap_modules, expensive_modules)
+
+    await bridge_orbiter(account_id, key, proxy);
+    await deposit_full_amount_okx(account_id, key, proxy, destination_address);
 
 
 async def multi_approve(account_id, key, proxy):
