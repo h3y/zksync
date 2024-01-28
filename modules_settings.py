@@ -78,7 +78,7 @@ async def deposit_full_amount_okx(_id, key, proxy, destination_address):
     to_address = destination_address
     #chains = ['arbitrum', 'zksync', 'linea', 'base', 'optimism']
     #chains = ['zksync']
-    chains = ['arbitrum']
+    chains = ['linea']
     min_left_amount = 0.0007
     max_left_amount = 0.0012
     terminate = True
@@ -103,7 +103,7 @@ async def bridge_orbiter(account_id, key, proxy):
     #to_chain = "zksync"
 
     from_chains = ["zksync"]
-    to_chain = "arbitrum"
+    to_chain = "linea"
 
     min_amount = 0.005
     max_amount = 0.0051
@@ -982,6 +982,8 @@ async def automatic_routes(account_id, key, proxy, destination_address):
     await withdraw_okx(account_id, key, proxy);
 
     await routes.start_automatic(transaction_count, cheap_ratio, sleep_from, sleep_to, cheap_modules, expensive_modules)
+
+    await swap_tokens(account_id, key, proxy);
 
     await bridge_orbiter(account_id, key, proxy);
 
