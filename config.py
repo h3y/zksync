@@ -9,6 +9,7 @@ OKX_API_INFO = {
 }
 
 WALLETS_PATH = 'wallets.txt'
+DESTINATION_WALLETS_PATH = 'destination_wallets.txt'
 PRIVATE_KEYS_PATH = 'private_keys.txt'
 ENCRYPTED_DATA_PATH = 'encrypted_data.txt'
 PROXIES_PATH = 'proxy.txt'

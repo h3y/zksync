@@ -7,7 +7,7 @@ from pathlib import Path
 import base64
 from hashlib import md5
 from typing import Dict
-from config import PRIVATE_KEYS_PATH, WALLETS_PATH, ENCRYPTED_DATA_PATH, PROXIES_PATH
+from config import PRIVATE_KEYS_PATH, WALLETS_PATH, DESTINATION_WALLETS_PATH, ENCRYPTED_DATA_PATH, PROXIES_PATH
 from settings import USE_PROXY
 
 
@@ -73,6 +73,7 @@ def encrypt_private_keys(password: bytes):
     wallets_path = Path(WALLETS_PATH)
     private_path = Path(PRIVATE_KEYS_PATH)
     proxies_path = Path(PROXIES_PATH)
+    destination_wallets_path = Path(DESTINATION_WALLETS_PATH)
 
     if not private_path.exists():
         raise ValueError(f"File does not exist {private_path}")
@@ -80,6 +81,8 @@ def encrypt_private_keys(password: bytes):
         raise ValueError(f"File does not exist {private_path}")
     if not proxies_path.exists():
         raise ValueError(f"File does not exist {proxies_path}")
+    if not destination_wallets_path.exists():
+        raise ValueError(f'File does not exist {destination_wallets_path}')
 
     with open(private_path, 'r') as f:
         private_keys = f.read().split()
@@ -87,19 +90,23 @@ def encrypt_private_keys(password: bytes):
         wallets = [wallet.lower() for wallet in f.read().split()]
     with open(proxies_path, 'r') as f:
         proxies = [proxy for proxy in f.read().split()]
+    with open(destination_wallets_path, 'r') as f:
+        destination_wallets = [destination_wallet.lower() for destination_wallet in f.read().split()]
 
     if len(private_keys) != len(wallets):
         raise ValueError('Length of wallets != length of private keys')
     if USE_PROXY and len(proxies) != 0 and len(proxies) != len(wallets):
         raise ValueError('Count of wallets != count of proxies')
+    if len(destination_wallets) != 0 and len(destination_wallets) != len(wallets):
+        raise ValueError('Count of wallets != count of destination_wallets')
 
     if not proxies:
         proxies = [None] * len(wallets)
 
     wallet_data = dict()
-    for wallet, private_key, proxy in zip(wallets, private_keys, proxies):
+    for wallet, private_key, proxy, destination_wallet in zip(wallets, private_keys, proxies, destination_wallets):
         wallet_data[wallet] = {'private_key': private_key,
-                               'proxy': proxy}
+                               'proxy': proxy, 'destination_wallet': destination_wallet}
 
     fernet = Fernet(password)
     encrypted_data = fernet.encrypt(json.dumps(wallet_data).encode())

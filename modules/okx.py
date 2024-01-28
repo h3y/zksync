@@ -227,3 +227,19 @@ class Okx(ZkSync):
 
         logger.success(f'[{self.account_id}][{self.address}] Successfully withdrawn {amount} {token_name} ')
         await exchange.close()
+    
+    @retry
+    async def okx_deposit(self, min_left_amount, max_left_amount, token_name, to_address, terminate=True):
+        left_amount = round(random.uniform(min_left_amount, max_left_amount), 8)
+        wei_balance = await self.w3.eth.get_balance(self.address)
+        curr_balance = round(float(self.w3.from_wei(wei_balance, "ether")), 8)
+        logger.info(f'current balance {curr_balance} ETH ,left amount {left_amount} ETH')
+
+        amount_to_send = curr_balance - left_amount
+
+        logger.info(f'[{self.account_id}][{self.address}] Start depositing to OKX {amount_to_send} {token_name}')
+
+        tx_data = await self.get_send_tx_data(self.w3.to_wei(amount_to_send, "ether"), to_address)
+        signed_txn = await self.sign(tx_data)
+        txn_hash = await self.send_raw_transaction(signed_txn)
+        await self.wait_until_tx_finished(txn_hash.hex())

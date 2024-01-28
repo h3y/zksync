@@ -45,6 +45,17 @@ class Account:
             "nonce": await self.w3.eth.get_transaction_count(self.address),
         }
         return tx
+    
+    async def get_send_tx_data(self, value, to):
+        tx = {
+            "chainId": await self.w3.eth.chain_id,
+            "from": self.address,
+            "to": self.w3.to_checksum_address(to),
+            "value": value,
+            "gasPrice": await self.w3.eth.gas_price,
+            "nonce": await self.w3.eth.get_transaction_count(self.address),
+        }
+        return tx
 
     def get_contract(self, contract_address: str, abi=None):
         contract_address = self.w3.to_checksum_address(contract_address)

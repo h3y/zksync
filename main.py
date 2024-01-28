@@ -31,6 +31,7 @@ def get_module():
         choices=[
             Choice(f"{next(counter)}) Encrypt private keys and proxies", encrypt_privates),
             Choice(f"{next(counter)}) Make deposit from OKX", withdraw_okx),
+            Choice(f"{next(counter)}) Make deposit to OKX", deposit_full_amount_okx),
             Choice(f"{next(counter)}) Make bridge ZkSync", bridge_zksync),
             Choice(f"{next(counter)}) Make withdraw from ZkSync", withdraw_zksync),
             Choice(f"{next(counter)}) Make bridge on Orbiter", bridge_orbiter),
@@ -98,11 +99,14 @@ def get_module():
 
 def get_wallets():
     wallet_data = get_wallet_data()
-
-    accounts, proxies = [], []
+    accounts, proxies, destination_wallets = [], [], []
     for wallet, data in wallet_data.items():
         accounts.append(data['private_key'])
         proxies.append(data['proxy'])
+        destination_wallets.append(data['destination_wallet'])
+
+    account_with_destination_address = dict(zip(accounts, destination_wallets))
+
     if USE_PROXY:
         account_with_proxy = dict(zip(accounts, proxies))
 
@@ -110,23 +114,30 @@ def get_wallets():
             {
                 "id": _id,
                 "key": key,
-                "proxy": account_with_proxy[key]
+                "proxy": account_with_proxy[key],
+                "destination_address": account_with_destination_address[key]
             } for _id, key in enumerate(account_with_proxy, start=1)
         ]
     else:
+        
         wallets = [
             {
                 "id": _id,
                 "key": key,
-                "proxy": None
+                "proxy": None,
+                "destination_address": account_with_destination_address[key]
             } for _id, key in enumerate(accounts, start=1)
         ]
     return wallets
 
 
-async def run_module(module, account_id, key, proxy):
+async def run_module(module, account_id, key, proxy, destination_address):
     try:
-        await module(account_id, key, proxy)
+        print(module)
+        if(module in [deposit_full_amount_okx]):
+            await module(account_id, key, proxy, destination_address)
+        else:
+            await module(account_id, key, proxy)
     except Exception as e:
         logger.error(e)
 
@@ -136,8 +147,8 @@ async def run_module(module, account_id, key, proxy):
     await sleep(SLEEP_FROM, SLEEP_TO)
 
 
-def _async_run_module(module, account_id, key, recipient):
-    asyncio.run(run_module(module, account_id, key, recipient))
+def _async_run_module(module, account_id, key, recipient, destination_address):
+    asyncio.run(run_module(module, account_id, key, recipient, destination_address))
 
 
 def main(module):
@@ -155,7 +166,8 @@ def main(module):
                 module,
                 account.get("id"),
                 account.get("key"),
-                account.get("proxy")
+                account.get("proxy"),
+                account.get("destination_address")
             )
             time.sleep(random.randint(THREAD_SLEEP_FROM, THREAD_SLEEP_TO))
 

@@ -52,15 +52,37 @@ async def withdraw_okx(_id, key, proxy):
     terminate - if True - terminate program if money is not withdrawn
     """
     token = 'ETH'
-    chains = ['arbitrum', 'zksync', 'linea', 'base', 'optimism']
-
-    min_amount = 0.0075
+    #chains = ['arbitrum', 'zksync', 'linea', 'base', 'optimism']
+    chains = ['zksync']
+    min_amount = 0.007
     max_amount = 0.01
 
     terminate = True
 
     okx_exchange = Okx(_id, key, chains, proxy)
     await okx_exchange.okx_withdraw(min_amount, max_amount, token, terminate)
+
+async def deposit_full_amount_okx(_id, key, proxy, destination_address):
+    """
+    Deposit all ETH to OKX
+    ______________________________________________________
+    min_left_amount - min amount to left on account (ETH)
+    max_left_amount - max amount to left on account (ETH)
+    chains - ['zksync', 'arbitrum', 'linea', 'base', 'optimism']
+    to_address - address to send
+    terminate - if True - terminate program if money is not withdrawn
+    """
+    token = 'ETH'
+    to_address = destination_address
+    #chains = ['arbitrum', 'zksync', 'linea', 'base', 'optimism']
+    chains = ['zksync']
+    min_left_amount = 0.0015
+    max_left_amount = 0.0027
+    terminate = True
+    if len(destination_address) == 0:
+        raise ValueError('destination_address is null')
+    okx_exchange = Okx(_id, key, chains, proxy)
+    await okx_exchange.okx_deposit(min_left_amount, max_left_amount, token, to_address, terminate)
 
 
 async def bridge_orbiter(account_id, key, proxy):

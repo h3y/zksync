@@ -4,8 +4,8 @@ RANDOM_WALLET = True  # True or False
 # removing a wallet from the list after the job is done
 REMOVE_WALLET = False
 
-SLEEP_FROM = 500  # Second
-SLEEP_TO = 800  # Second
+SLEEP_FROM = 10  # Second
+SLEEP_TO = 20  # Second
 
 QUANTITY_THREADS = 1
 
@@ -13,7 +13,7 @@ THREAD_SLEEP_FROM = 300
 THREAD_SLEEP_TO = 600
 
 # PROXY MODE
-USE_PROXY = True
+USE_PROXY = False
 
 # GWEI CONTROL MODE
 CHECK_GWEI = True  # True or False
