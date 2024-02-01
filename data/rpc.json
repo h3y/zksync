@@ -29,7 +29,7 @@
   },
   "zksync": {
     "rpc": [
-      "https://zksync.drpc.org"
+      "https://zksync-era.blockpi.network/v1/rpc/public"
     ],
     "explorer": "https://explorer.zksync.io/tx/",
     "token": "ETH"
@@ -54,5 +54,12 @@
     ],
     "explorer": "https://lineascan.build/tx/",
     "token": "ETH"
+  },
+  "avalanche": {
+    "rpc": [
+      "https://ava-mainnet.public.blastapi.io/ext/bc/C/rpc"
+    ],
+    "explorer": "https://snowtrace.io/tx/",
+    "token": "AVAX"
   }
 }

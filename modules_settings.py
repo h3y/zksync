@@ -78,7 +78,7 @@ async def deposit_full_amount_okx(_id, key, proxy, destination_address):
     to_address = destination_address
     #chains = ['arbitrum', 'zksync', 'linea', 'base', 'optimism']
     #chains = ['zksync']
-    chains = ['linea']
+    chains = ['avalanche']
     min_left_amount = 0.0007
     max_left_amount = 0.0012
     terminate = True
