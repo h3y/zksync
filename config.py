@@ -156,6 +156,7 @@ ZKSYNC_TOKENS = {
     "OT": "0xd0ea21ba66b67be636de1ec4bd9696eb8c61e9aa",
     "MAV": "0x787c09494ec8bcb24dcaf8659e7d5d69979ee508",
     "WBTC": "0xbbeb516fb02a01611cbbe0453fe3c580d7281011",
+    "AVAX": "0xB57B60DeBDB0b8172bb6316a9164bd3C695F133a",
 }
 
 SYNCSWAP_CONTRACTS = {
@@ -265,5 +266,6 @@ CHAINS_OKX = {
     'base': 'Base',
     'arbitrum': 'Arbitrum One',
     'optimism': 'Optimism',
-    'zksync': 'zkSync Era'
+    'zksync': 'zkSync Era',
+    'avalanche': 'Avalanche C-Chain'
 }

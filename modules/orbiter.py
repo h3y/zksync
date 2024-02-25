@@ -33,6 +33,7 @@ class Orbiter(Account):
             "base": "8453",
             "linea": "59144",
             "zora": "7777777",
+            "avalanche": "43114"
         }
 
         self.orbiter_ids = {
