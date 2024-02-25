@@ -129,6 +129,15 @@ with open("data/abi/owlto/abi.json", "r") as file:
 with open('data/orbiter_maker.json', 'r') as file:
     ORBITER_MAKER = json.load(file)
 
+with open("data/abi/zerius/abi.json", "r") as file:
+    ZERIUS_ABI = json.load(file)
+
+with open("data/deploy/abi.json", "r") as file:
+    DEPLOYER_ABI = json.load(file)
+
+with open("data/deploy/bytecode.txt", "r") as file:
+    DEPLOYER_BYTECODE = file.read()
+
 ZKSYNC_BRIDGE_CONTRACT = "0x32400084c286cf3e17e7b677ea9583e60a000324"
 
 ORBITER_CONTRACT = ""
@@ -249,6 +258,7 @@ OMNISEA_CONTRACT = "0x1Ecd053f681a51E37087719653f3f0FFe54750C0"
 SAFE_CONTRACT = "0xDAec33641865E4651fB43181C6DB6f7232Ee91c2"
 
 OWLTO_CHECKIN_CONTRACT = "0xD48e3caf0D948203434646a3f3e80f8Ee18007dc"
+ZERIUS_CONTRACT = "0xeb22c3e221080ead305cae5f37f0753970d973cd"
 
 CHAINS_OKX = {
     'linea': 'Linea',

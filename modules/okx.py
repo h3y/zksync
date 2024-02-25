@@ -196,7 +196,7 @@ class Okx(ZkSync):
         curr_balance = await self.w3.eth.get_balance(self.address)
 
         await self.transfer_from_subaccounts(token_name)
-        # await self.transfer_spot_to_funding(token_name)
+        await self.transfer_spot_to_funding(token_name)
 
         exchange = await self.get_ccxt()
         networks, networks_data = await self.okx_get_withdrawal_info(exchange, token_name)

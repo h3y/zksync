@@ -29,7 +29,7 @@
   },
   "zksync": {
     "rpc": [
-      "https://zksync.drpc.org"
+      "https://1rpc.io/zksync2-era"
     ],
     "explorer": "https://explorer.zksync.io/tx/",
     "token": "ETH"
