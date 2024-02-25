@@ -84,6 +84,11 @@ def get_module():
             Choice(f"{next(counter)}) Use custom routes", custom_routes),
             Choice(f"{next(counter)}) Use automatic routes", automatic_routes),
             Choice(f"{next(counter)}) MultiApprove", multi_approve),
+            Choice(f"{next(counter)}) Layer Swap To Scroll", bridge_layerswap),
+            Choice(f"{next(counter)}) Mint and Bridge Zerius NFT", mint_zerius),
+            Choice(f"{next(counter)}) Bridge Nitro: Scroll => Linea", bridge_nitro),
+            Choice(f"{next(counter)}) Bridge Orbiter: Scroll => Linea", bridge_orbiter_from_scroll),
+            Choice(f"{next(counter)}) Deploy contract", deploy_contract),
             Choice(f"{next(counter)}) Check transaction count", "tx_checker"),
             Choice(f"{next(counter)}) Exit", "exit"),
         ],
@@ -91,8 +96,6 @@ def get_module():
         pointer="✅ "
     ).ask()
     if result == "exit":
-        print("❤️ Project author – https://t.me/sybilwave\n")
-        print("❤️ Fork author – https://t.me/rgalyeon\n")
         sys.exit()
     return result
 
@@ -134,7 +137,7 @@ def get_wallets():
 async def run_module(module, account_id, key, proxy, destination_address):
     try:
         print(module)
-        if(module in [deposit_full_amount_okx, automatic_routes]):
+        if(module in [deposit_full_amount_okx, automatic_routes, custom_routes]):
             await module(account_id, key, proxy, destination_address)
         else:
             await module(account_id, key, proxy)

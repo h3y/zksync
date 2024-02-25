@@ -21,7 +21,7 @@ class L2Telegraph(Account):
             False,
             "0x"
         ).call()
-        return int(fee[0] * 1.2)
+        return int(fee[0] * 1.35)
 
     async def get_nft_id(self, txn_hash: str):
         receipts = await self.w3.eth.get_transaction_receipt(txn_hash)

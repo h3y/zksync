@@ -1,5 +1,9 @@
 import asyncio
 from modules import *
+from modules.deployer import Deployer
+from modules.layerswap import LayerSwap
+from modules.nitro import Nitro
+from modules.zerius import Zerius
 
 
 async def bridge_zksync(account_id, key, proxy):
@@ -56,8 +60,8 @@ async def withdraw_okx(_id, key, proxy):
     #chains = ['arbitrum', 'zksync', 'linea', 'base', 'optimism']
     chains = ['zksync']
 
-    min_amount = 0.035
-    max_amount = 0.05
+    min_amount = 0.11
+    max_amount = 0.17
 
     terminate = True
 
@@ -76,11 +80,9 @@ async def deposit_full_amount_okx(_id, key, proxy, destination_address):
     """
     token = 'ETH'
     to_address = destination_address
-    #chains = ['arbitrum', 'zksync', 'linea', 'base', 'optimism']
-    #chains = ['zksync']
-    chains = ['avalanche']
-    min_left_amount = 0.0007
-    max_left_amount = 0.0012
+    chains = ['linea']
+    min_left_amount = 0.00035
+    max_left_amount = 0.00043
     terminate = True
     if len(destination_address) == 0:
         raise ValueError('destination_address is null')
@@ -111,9 +113,40 @@ async def bridge_orbiter(account_id, key, proxy):
 
     all_amount = True
 
-    min_percent = 95
+    min_percent = 98
     max_percent = 100
-    save_funds = [0.0014, 0.002]
+    save_funds = [0.007, 0.011]
+    min_required_amount = 0.001
+
+    orbiter = Orbiter(account_id, key, from_chains, proxy, min_required_amount)
+    await orbiter.bridge(to_chain, min_amount, max_amount, decimal, all_amount, min_percent, max_percent, save_funds)
+
+async def bridge_orbiter_from_scroll(account_id, key, proxy):
+    """
+    Bridge from orbiter
+    ______________________________________________________
+    from_chain – ethereum, polygon_zkevm, arbitrum, optimism, zksync | Select one
+    to_chain – ethereum, polygon_zkevm, arbitrum, optimism, zksync | Select one
+
+    save_funds - how much eth save on the account (min and max, choose randomly)
+    min_required_amount - минимальная требуемая сумма в сети, на которую будет реагировать модуль в eth
+    """
+
+    #from_chains = ["arbitrum", "optimism", "base", "scroll", "linea"]
+    #to_chain = "zksync"
+
+    from_chains = ["scroll"]
+    to_chain = "linea"
+
+    min_amount = 0.005
+    max_amount = 0.0051
+    decimal = 4
+
+    all_amount = True
+
+    min_percent = 98
+    max_percent = 100
+    save_funds = [0.0006, 0.0008]
     min_required_amount = 0.001
 
     orbiter = Orbiter(account_id, key, from_chains, proxy, min_required_amount)
@@ -615,8 +648,8 @@ async def deposit_eralend(account_id, key, proxy):
     max_amount = 0.0002
     decimal = 5
 
-    sleep_from = 5
-    sleep_to = 24
+    sleep_from = 300
+    sleep_to = 600
 
     make_withdraw = True
 
@@ -643,8 +676,8 @@ async def deposit_basilisk(account_id, key, proxy):
     max_amount = 0.0002
     decimal = 5
 
-    sleep_from = 5
-    sleep_to = 24
+    sleep_from = 300
+    sleep_to = 600
 
     make_withdraw = True
 
@@ -671,8 +704,8 @@ async def deposit_reactorfusion(account_id, key, proxy):
     max_amount = 0.0002
     decimal = 5
 
-    sleep_from = 5
-    sleep_to = 24
+    sleep_from = 300
+    sleep_to = 600
 
     make_withdraw = True
 
@@ -699,8 +732,8 @@ async def deposit_zerolend(account_id, key, proxy):
     max_amount = 0.0002
     decimal = 5
 
-    sleep_from = 5
-    sleep_to = 24
+    sleep_from = 300
+    sleep_to = 600
 
     make_withdraw = True
 
@@ -790,7 +823,7 @@ async def swap_tokens(account_id, key, proxy):
     use_dex = [
         "maverick", "mute", "pancake", "syncswap",
         "woofi", "spacefi", "odos", "zkswap",
-        "xyswap", "openocean", "inch", "vesync"
+        "xyswap", "openocean",  "vesync" #"inch",
     ]
 
     use_tokens = ["USDC"]
@@ -806,6 +839,74 @@ async def swap_tokens(account_id, key, proxy):
     swap_tokens = SwapTokens(account_id, key, proxy)
     await swap_tokens.swap(use_dex, use_tokens, sleep_from, sleep_to, slippage, min_percent, max_percent)
 
+async def bridge_nitro(account_id, key, proxy):
+    """
+    Bridge from nitro
+    ______________________________________________________
+    from_chain – ethereum, arbitrum, optimism, zksync, scroll, base, linea | Select one
+    to_chain – ethereum, arbitrum, optimism, zksync, scroll, base, linea | Select one
+    """
+
+    from_chain = "scroll"
+    to_chain = "linea"
+
+    min_amount = 0.004
+    max_amount = 0.0041
+    decimal = 4
+
+    all_amount = True
+    save_funds = [0.0027, 0.003]
+    min_percent = 98
+    max_percent = 100
+
+    nitro = Nitro(account_id=account_id, private_key=key, chain=from_chain, proxy=proxy)
+    await nitro.bridge(to_chain, min_amount, max_amount, decimal, all_amount, min_percent, max_percent, save_funds)
+
+async def bridge_layerswap(account_id, key, proxy):
+    """
+    Bridge from Layerswap
+    ______________________________________________________
+    from_chain - Choose any chain: ethereum, arbitrum, optimism, avalanche, polygon, base, scroll
+    to_chain - Choose any chain: ethereum, arbitrum, optimism, avalanche, polygon, base, scroll
+
+    make_withdraw - True, if need withdraw after deposit
+
+    all_amount - deposit from min_percent to max_percent
+    """
+
+    from_chain = "zksync"
+    to_chain = "scroll"
+
+    min_amount = 0.003
+    max_amount = 0.004
+
+    decimal = 5
+
+    all_amount = True
+
+    min_percent = 25
+    max_percent = 35
+
+    layerswap = LayerSwap(account_id=account_id, private_key=key, chain=from_chain, proxy=proxy)
+    await layerswap.bridge(
+        from_chain, to_chain, min_amount, max_amount, decimal, all_amount, min_percent, max_percent
+    )
+
+async def mint_zerius(account_id, key, proxy):
+    """
+    Mint + bridge Zerius NFT
+    ______________________________________________________
+    chains - list chains for random chain bridge: arbitrum, optimism, polygon, bsc, avalanche
+    Disclaimer - The Mint function should be called "mint", to make sure of this, look at the name in Rabby Wallet or in explorer
+    """
+
+    chains = ["arbitrum", "polygon", "avalanche", "bsc"]
+
+    sleep_from = 10
+    sleep_to = 20
+
+    zerius = Zerius(account_id, key, proxy)
+    await zerius.bridge(chains, sleep_from, sleep_to)
 
 async def swap_multiswap(account_id, key, proxy):
     """
@@ -822,22 +923,24 @@ async def swap_multiswap(account_id, key, proxy):
 
     use_dex = [
         "maverick", "mute", "pancake", "syncswap",
-        "woofi", "spacefi", "odos", "zkswap",
-        "xyswap", "openocean", "inch", "vesync"
+       # "woofi", 
+        "spacefi", "odos", "zkswap",
+        #"xyswap", 
+        "openocean",  "vesync" #"inch",
     ]
 
     min_swap = 2
-    max_swap = 2
+    max_swap = 3
 
     sleep_from = 100
     sleep_to = 200
 
     slippage = 1
 
-    random_swap_token = True
+    random_swap_token = False
 
-    min_percent = 10
-    max_percent = 10
+    min_percent = 15
+    max_percent = 30
 
     multi = Multiswap(account_id, key, proxy)
     await multi.swap(
@@ -872,7 +975,7 @@ async def owlto_check_in(account_id, key, proxy):
     await owlto.check_in(ref)
 
 
-async def custom_routes(account_id, key, proxy):
+async def custom_routes(account_id, key, proxy, destination_address):
     """
     BRIDGE:
         – bridge_zksync
@@ -934,22 +1037,43 @@ async def custom_routes(account_id, key, proxy):
     """
 
     use_modules = [
-        swap_tokens,
-        [create_omnisea, None],
+        # swap_tokens,
+        #[create_omnisea, None],
         swap_multiswap,
         mint_zkstars,
+        bridge_nft,
+        [mint_tavaera, None],
         [deposit_eralend, deposit_basilisk, deposit_reactorfusion, deposit_zerolend],
-        [send_mail, None],
+        [send_mail, None]
+    ]
+
+    ordered_modules = [
+        bridge_layerswap,
+        mint_zerius,
+        deploy_contract,
+        bridge_orbiter_from_scroll,
+        swap_tokens,
+        bridge_orbiter
     ]
 
     sleep_from = 100
-    sleep_to = 300
+    sleep_to = 220
 
     random_module = True
 
     routes = Routes(account_id, key, proxy)
+
+    await withdraw_okx(account_id, key, proxy);
+
+    await asyncio.sleep(180);
+
     await routes.start(use_modules, sleep_from, sleep_to, random_module)
 
+    await routes.start(ordered_modules, sleep_from, sleep_to, False)
+
+    await asyncio.sleep(215);
+    await deposit_full_amount_okx(account_id, key, proxy, destination_address);
+    await asyncio.sleep(389);
 
 async def automatic_routes(account_id, key, proxy, destination_address):
     """
@@ -989,6 +1113,7 @@ async def automatic_routes(account_id, key, proxy, destination_address):
 
     await asyncio.sleep(200);
     await deposit_full_amount_okx(account_id, key, proxy, destination_address);
+    await asyncio.sleep(400);
 
 
 async def multi_approve(account_id, key, proxy):
@@ -1097,3 +1222,7 @@ async def create_safe(account_id, key, proxy):
 
 def get_tx_count():
     asyncio.run(check_tx())
+    
+async def deploy_contract(account_id, key, proxy):
+    deployer = Deployer(account_id, key, proxy)
+    await deployer.deploy_token()
